@@ -4,7 +4,8 @@
 from .data import (
     BatteryData,
     CycleData,
-    CyclingProtocol,
+    StageData,
+    StageMode,
     DataBundle,
     ZScoreDataTransformation,
     LogScaleDataTransformation,

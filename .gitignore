@@ -2,6 +2,7 @@ data
 **/__pycache__/
 .vscode/
 !src/data/
+!tests/data/
 workspaces/
 experiments/
 **/cache/
