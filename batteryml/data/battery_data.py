@@ -75,9 +75,9 @@ class BatteryData:
                  cathode_material: str = None,
                  electrolyte_material: str = None,
                  nominal_capacity_in_Ah: float = None,
-                 depth_of_charge: float = 1.0,
-                 depth_of_discharge: float = 1.0,
-                 already_spent_cycles: int = 0,
+                 depth_of_charge: float = None,
+                 depth_of_discharge: float = None,
+                 already_spent_cycles: int = None,
                  max_voltage_limit_in_V: float = None,
                  min_voltage_limit_in_V: float = None,
                  max_current_limit_in_A: float = None,
@@ -123,7 +123,7 @@ class BatteryData:
         return f'<BatteryData: {self.cell_id}>'
 
     def __str__(self):
-        details = [f'cell_id: {self.cell_id}']
+        details = []
         for key, val in self.__dict__.items():
             if key == 'cycle_data':
                 details.append(f'cycles: {len(val)}')
