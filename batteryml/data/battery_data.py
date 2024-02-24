@@ -49,20 +49,64 @@ class StageData:
 
 
 class CycleData:
-    def __init__(self, stages: List[StageData | dict], **kwargs):
-        self.stages = [
-            stage if isinstance(stage, StageData) else StageData(**stage)
-            for stage in stages
-        ]
+    def __init__(self,
+                 stages: List[StageData | dict] = None,
+                 # Deprecated
+                 voltage_in_V: List[float] = None,
+                 current_in_A: List[float] = None,
+                 time_in_s: List[float] = None,
+                 temperature_in_C: List[float] = None,
+                 **kwargs):
+        self._is_old_version = stages is None
+        if self._is_old_version:
+            # TODO: add deprecation warning
+            self._voltage_in_V = voltage_in_V
+            self._current_in_A = current_in_A
+            self._time_in_s = time_in_s
+            self._temperature_in_C = temperature_in_C
+        else:
+            self.stages = [
+                stage if isinstance(stage, StageData) else StageData(**stage)
+                for stage in stages
+            ]
         self.additional_data = {}
         for key, val in kwargs.items():
             self.additional_data[key] = val
 
     def to_dict(self):
+        if self._is_old_version:
+            # TODO: add deprecation warning
+            return {
+                'voltage_in_V': self._voltage_in_V,
+                'current_in_A': self._current_in_A,
+                'time_in_s': self._time_in_s,
+                'temperature_in_C': self._temperature_in_C
+            }
         return {
             'stages': [stage.to_dict() for stage in self.stages],
             **self.additional_data
         }
+
+    # Deprecated
+    @property
+    def voltage_in_V(self):
+        # TODO: add deprecation warning
+        return self._voltage_in_V
+
+    @property
+    def time_in_s(self):
+        # TODO: add deprecation warning
+        return self._time_in_s
+
+    @property
+    def current_in_A(self):
+        # TODO: add deprecation warning
+        return self._current_in_A
+
+    @property
+    def temperature_in_C(self):
+        # TODO: add deprecation warning
+        return self._temperature_in_C
 
 
 class BatteryData:
@@ -75,18 +119,19 @@ class BatteryData:
                  cathode_material: str = None,
                  electrolyte_material: str = None,
                  nominal_capacity_in_Ah: float = None,
-                 depth_of_charge: float = None,
-                 depth_of_discharge: float = None,
-                 already_spent_cycles: int = None,
                  max_voltage_limit_in_V: float = None,
                  min_voltage_limit_in_V: float = None,
                  max_current_limit_in_A: float = None,
                  min_current_limit_in_A: float = None,
                  reference: str = None,
                  description: str = None,
+                 # Deprecated
+                 depth_of_charge: float = None,
+                 depth_of_discharge: float = None,
+                 already_spent_cycles: int = None,
                  **kwargs):
         self.cell_id = cell_id
-        self.cycle_data = cycle_data
+        self.cycle_data = [CycleData(**cd) for cd in cycle_data]
         self.form_factor = form_factor
         self.anode_material = anode_material
         self.cathode_material = cathode_material
